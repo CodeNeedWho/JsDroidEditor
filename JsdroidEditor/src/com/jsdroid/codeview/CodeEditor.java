@@ -18,15 +18,12 @@ package com.jsdroid.codeview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 
 /**
  * Created by Administrator on 2018/2/11.
  */
 
-public class CodeEditor extends HorizontalScrollView {
-	ScrollView mScrollView;
+public class CodeEditor extends HVScrollView {
 	CodeText mCodeText;
 	int mCodeTextMinHeight;
 	int mCodeTextMinWidth;
@@ -53,20 +50,9 @@ public class CodeEditor extends HorizontalScrollView {
 
 	private void init() {
 		setBackgroundColor(0XFF333333);
-		mScrollView = new ScrollView(getContext()) {
-			@Override
-			protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-				super.onScrollChanged(l, t, oldl, oldt);
-				mCodeText.postInvalidate();
-			}
-		};
-		android.view.ViewGroup.LayoutParams params = new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		mScrollView.setLayoutParams(params);
 		mCodeText = new CodeText(getContext());
-		mCodeText.scrollView = mScrollView;
-		mScrollView.addView(mCodeText);
-		addView(mScrollView);
+		mCodeText.scrollView = this;
+		addView(mCodeText);
 
 	}
 
@@ -87,7 +73,7 @@ public class CodeEditor extends HorizontalScrollView {
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
 		super.onScrollChanged(l, t, oldl, oldt);
-		//mCodeText.postInvalidate();
+		 mCodeText.postInvalidate();
 	}
 
 	public CodeText getCodeText() {

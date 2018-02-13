@@ -56,7 +56,7 @@ public class CodeText extends EditText {
 	// 高亮颜色数组
 	protected int colors[];
 	// 文字范围
-	protected ScrollView scrollView;
+	protected FrameLayout scrollView;
 	
 	// 最大行号：工具\n数量得到
 	int maxLineNumble;
