@@ -15,54 +15,58 @@
  */
 package com.jsdroid.codeview;
 
+import org.mozilla.javascript.Token;
+import org.mozilla.javascript.TokenStream;
+
 /**
  * Created by Administrator on 2018/2/12.
  */
 
 public class JsParserThread extends java.lang.Thread {
-    private static JsParserThread jsParserThread;
+	private static JsParserThread jsParserThread;
 
-    CodeText codeText;
-    boolean running;
+	CodeText codeText;
+	boolean running;
 
-    private JsParserThread(CodeText codeText) {
-        this.codeText = codeText;
-        running=true;
-    }
+	private JsParserThread(CodeText codeText) {
+		this.codeText = codeText;
+		running = true;
+	}
 
-
-    @Override
-    public void run() {
-		TokenStream ts = new TokenStream(null, sourceString, 0);
-		while(running){
-            try {
-                int token = ts.getToken();
-                if(token == Token.EOF){
-                    break;
-                }
-                int color = Token.getColor(token);
-                for(int i=ts.getTokenBeg();i<=ts.getTokenEnd();i++){
-                    colors[i] = color;
-                }
-            } catch (Exception e) {
-            }
+	@Override
+	public void run() {
+		try {
+			TokenStream ts = new TokenStream(null, codeText.getText()
+					.toString(), 0);
+			int colors[] = codeText.getCodeColors();
+			while (running) {
+				try {
+					int token = ts.getToken();
+					if (token == Token.EOF) {
+						break;
+					}
+					int color = Token.getColor(token);
+					for (int i = ts.getTokenBeg(); i <= ts.getTokenEnd(); i++) {
+						colors[i] = color;
+					}
+				} catch (Exception e) {
+				}
+			}
+			codeText.postInvalidate();
+		} catch (Exception e) {
 		}
-        try {
-            codeText.postInvalidate();
-        } catch (Exception e) {
-        }
 
-    }
+	}
 
-    public synchronized static void parser(CodeText codeText) {
-        if (jsParserThread != null) {
-            jsParserThread.stopParser();
-        }
-        jsParserThread = new JsParserThread(codeText);
-        jsParserThread.start();
-    }
+	public synchronized static void parser(CodeText codeText) {
+		if (jsParserThread != null) {
+			jsParserThread.stopParser();
+		}
+		jsParserThread = new JsParserThread(codeText);
+		jsParserThread.start();
+	}
 
-    public void stopParser() {
-        running = false;
-    }
+	public void stopParser() {
+		running = false;
+	}
 }
