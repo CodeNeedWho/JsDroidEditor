@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\AndroidProjects\JsDroid\editor\src\main\assets"><file name="fonts/SourceCodePro-Light.ttf" path="E:\AndroidProjects\JsDroid\editor\src\main\assets\fonts\SourceCodePro-Light.ttf"/></source><source path="E:\AndroidProjects\JsDroid\editor\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="E:\AndroidProjects\JsDroid\editor\src\debug\assets"/></dataSet></merger>
