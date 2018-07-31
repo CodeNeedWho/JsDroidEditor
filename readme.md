@@ -6,4 +6,5 @@ JsDroid用到的语法高亮编辑器，支持撤销重做。<br>
 ![](https://github.com/980008027/JsDroidEditor/raw/master/capture.jpg)
 # 演示
 ![image](https://github.com/980008027/JsDroidEditor/raw/master/1.gif)
+<br>
 ![image](https://github.com/980008027/JsDroidEditor/raw/master/2.gif)
