@@ -5,4 +5,6 @@ JsDroid用到的语法高亮编辑器，支持撤销重做。<br>
 # 截图
 ![](https://github.com/980008027/JsDroidEditor/raw/master/capture.jpg)
 # 视频
-<video id="video" controls="" preload="none"><source id="mp4" src="https://github.com/980008027/JsDroidEditor/raw/master/video.mp4" type="video/mp4"></video>
+![video](https://github.com/980008027/JsDroidEditor/raw/master/video.mp4)
+![image](https://github.com/980008027/JsDroidEditor/raw/master/1.gif)
+![image](https://github.com/980008027/JsDroidEditor/raw/master/2.gif)
