@@ -4,3 +4,8 @@ JsDroid用到的语法高亮编辑器，支持撤销重做。<br>
 适配各种字体，可以自定义光标颜色，背景颜色等。
 # 截图
 ![](https://github.com/980008027/JsDroidEditor/raw/master/capture.jpg)
+# 视频
+<video id="video" controls="" preload="none">
+  <source id="mp4" src="https://github.com/980008027/JsDroidEditor/raw/master/video.mp4" type="video/mp4">
+  <p>Your user agent does not support the HTML5 Video element.</p>
+</video>
