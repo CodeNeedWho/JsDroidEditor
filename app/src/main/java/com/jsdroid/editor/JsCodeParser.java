@@ -15,15 +15,21 @@
  */
 package com.jsdroid.editor;
 
+import android.util.Log;
+
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.TokenStream;
+
+import java.io.PrintWriter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2018/2/12.
  */
 
 public class JsCodeParser implements Runnable {
-    static Object parserLock = new Object();
+    private static ExecutorService parserThreadPool = Executors.newSingleThreadExecutor();
     boolean running;
     CodeText codeText;
     //start:改变的位置
@@ -38,79 +44,85 @@ public class JsCodeParser implements Runnable {
     }
 
     public void run() {
-        synchronized (parserLock) {
-            //颜色移动位置
-            //start:改变的位置
-            //before:删除的数量
-            //count:添加的数量
-            int[] lastColors = codeText.getCodeColors();
-            if (lastColors != null) {
-                int len = codeText.getText().length();
-                int colors[] = new int[len];
-                for (int i = 0; i < start && i < len && i < lastColors.length; i++) {
-                    colors[i] = lastColors[i];
+        //颜色移动位置
+        //start:改变的位置
+        //before:删除的数量
+        //count:添加的数量
+        //如果添加的数量大于删除的数量，右移动;否则，左移动
+        int[] codeColors = codeText.getCodeColors();
+        if (count > before) {
+            //添加
+            //右移动[1,2,3,0,0] >> [0,0,1,2,3]
+            int off = count - before;
+            for (int i = codeColors.length - 1; i > start + off && i > 1; i--) {
+                if (reparse) {
+                    break;
                 }
-                for (int i = start; i < colors.length; i++) {
-                    int pos = (i - count + before);
-                    if (pos < 0 || pos >= lastColors.length) {
+                codeColors[i] = codeColors[i - off];
+            }
+        } else {
+            //删除
+            //左移动 [0,0,1,2,3] >> [1,2,3,0,0]
+            int off = before - count;
+            for (int i = start; i + off < codeColors.length; i++) {
+                if (reparse) {
+                    break;
+                }
+                codeColors[i] = codeColors[i + off];
+            }
+        }
+        if (running) {
+            codeText.postInvalidate();
+        }
+        try {
+            TokenStream ts = new TokenStream(null, codeText.getText()
+                    .toString(), 0);
+            while (running) {
+                if (reparse) {
+                    break;
+                }
+                try {
+                    int token = ts.getToken();
+                    if (token == Token.EOF) {
+                        codeText.postInvalidate();
                         break;
                     }
-                    colors[i] = lastColors[pos];
-                }
-                codeText.setCodeColors(colors);
-
-            } else {
-                lastColors = new int[codeText.getText().length()];
-                codeText.setCodeColors(lastColors);
-            }
-            codeText.postInvalidate();
-            try {
-                TokenStream ts = new TokenStream(null, codeText.getText()
-                        .toString(), 0);
-                int colors[] = new int[codeText.getText().length()];
-                while (running) {
-                    try {
-                        int token = ts.getToken();
-                        if (token == Token.EOF) {
-                            codeText.setCodeColors(colors);
-                            codeText.postInvalidate();
-                            break;
-                        }
-                        int color = Token.getColor(token);
-                        for (int i = ts.getTokenBeg(); i <= ts.getTokenEnd(); i++) {
-                            colors[i] = color;
-                        }
-                    } catch (Exception e) {
+                    int color = Token.getColor(token);
+                    for (int i = ts.getTokenBeg(); i <= ts.getTokenEnd(); i++) {
+                        codeColors[i] = color;
                     }
+                } catch (Exception e) {
                 }
-
-            } catch (Exception e) {
             }
 
-            parserLock.notifyAll();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (reparse) {
+            reparse = false;
+            reparse();
         }
         running = false;
+    }
+
+    private boolean reparse;
+
+    private void reparse() {
+        parserThreadPool.execute(this);
     }
 
     public synchronized void parse(int start, int before,
                                    int count) {
         if (running) {
-            stopParse();
+            reparse = true;
+            return;
         }
         running = true;
         this.start = start;
         this.before = before;
         this.count = count;
-        new Thread(this).start();
+        parserThreadPool.execute(this);
     }
 
-    public void stopParse() {
-        running = false;
-        synchronized (parserLock) {
-            try {
-                parserLock.wait(100);
-            } catch (InterruptedException e) {
-            }
-        }
-    }
 }

@@ -48,6 +48,7 @@ public class CodeText extends ColorsText {
         init();
     }
 
+
     private void init() {
         codeParser = new JsCodeParser(this);
         // 动态解析js代码更新文字颜色
@@ -61,7 +62,6 @@ public class CodeText extends ColorsText {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
-
                 codeParser.parse(start, before, count);
             }
 
@@ -81,14 +81,17 @@ public class CodeText extends ColorsText {
         super.onDraw(canvas);
         long endTime = System.currentTimeMillis();
         drawUseTimeCount = endTime - startTime;
-
+        Log.e("usetime", "" + drawUseTimeCount);
+        Log.e("textlen", "" + getText().length());
     }
 
+    /**
+     * 记录用户操作的键盘，避免一次按键，多次输入
+     */
     private int defaultDeviceId = -1000;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.e("deviceId", "" + event.getDeviceId());
         int deviceId = event.getDeviceId();
         if (defaultDeviceId == -1000) {
             defaultDeviceId = deviceId;
@@ -104,7 +107,6 @@ public class CodeText extends ColorsText {
         if (deviceId != defaultDeviceId) {
             return true;
         }
-
 
         if (keyCode == KeyEvent.KEYCODE_TAB) {
             int start = getSelectionStart();

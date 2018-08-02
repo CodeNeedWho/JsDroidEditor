@@ -10,11 +10,14 @@ import android.graphics.Typeface;
 import android.text.Layout;
 import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -22,13 +25,16 @@ import android.widget.TextView;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class ColorsText extends EditText {
     private Object colorLock = new Object();
     // 代码高亮颜色数组
-    private int codeColors[];
+    private int[] codeColors;
     // 滑动组件
     private View scrollView;
     // 最大行号：根据\n数量得到
@@ -42,7 +48,8 @@ public class ColorsText extends EditText {
     private int lineNumberBackgroundColor = 0x99ffffff;
     private int lineNumberSplitColor = 0x99ffffff;
     private int lineNumberSplitWidth = 1;
-    private int cursorColor = 0xffffff;
+    private int cursorColor = 0xffffffff;
+    private int selectBackgroundColor = 0x33ffffff;
 
     public void setLineNumberColor(int lineNumberColor) {
         this.lineNumberColor = lineNumberColor;
@@ -60,12 +67,10 @@ public class ColorsText extends EditText {
         this.selectBackgroundColor = selectBackgroundColor;
     }
 
-    private int selectBackgroundColor = 0;
 
     public void setDefaultTextColor(int defaultTextColor) {
         this.defaultTextColor = defaultTextColor;
     }
-
 
     public ColorsText(Context context) {
         super(context);
@@ -99,7 +104,6 @@ public class ColorsText extends EditText {
         setTextColor(Color.TRANSPARENT);
         setTypeface(Typeface.MONOSPACE);
         setPadding(0, DpiUtils.dip2px(getContext(), 2), DpiUtils.dip2px(getContext(), 8), DpiUtils.dip2px(getContext(), 48));
-
     }
 
 
@@ -291,7 +295,6 @@ public class ColorsText extends EditText {
             drawText(canvas);
         }
         canvas.restore();
-
         // 绘制分割线
         Paint paint = getPaint();
         paint.setStrokeWidth(lineNumberSplitWidth);
@@ -307,6 +310,7 @@ public class ColorsText extends EditText {
             invalidate();
         }
     }
+
 
     // 获取选择行，如果多余一行，返回-1
     public int getSelectLine() {
@@ -357,7 +361,6 @@ public class ColorsText extends EditText {
             previousLineBottom = lbottom;
             int lbaseline = lbottom - layout.getLineDescent(lineNum);
             int left = getPaddingLeft();
-
             // 绘制选择行背景
             if (lineNum == selectLine) {
                 paint.setColor(lineNumberBackgroundColor);
@@ -373,48 +376,44 @@ public class ColorsText extends EditText {
                 canvas.drawText(lineNumberText, 0, lineNumberText.length(), mNumberPadding,
                         lbaseline, paint);
             }
-            paint.setColor(defaultTextColor);
-
+            int textLength = getText().length();
             // 绘制文字
-            if (codeColors != null && start < codeColors.length) {
+            if (start < textLength) {
                 //计算需要绘制的文字位置
                 //获取改行所有文字宽度
                 float[] widths = new float[end - start + 1];
                 paint.getTextWidths(getText(), start, end, widths);
                 //计算获取看到的文字第一个位置，和对应的偏移x
                 float firstNeedDrawPos[] = getLineFirstCharPosForDraw(widths);
-
                 int firstPos = (int) firstNeedDrawPos[0];
                 float offsetX = firstNeedDrawPos[1];
                 int maxOffX = getViewScrollX() + getVisibleWidth();
                 // 文字着色
-                if (lineNumberText != null) {
-
-                    for (int i = start + firstPos; i < end && i < codeColors.length; ) {
-                        if (offsetX > maxOffX) {
-                            break;
-                        }
-                        int color = codeColors[i];
-                        {
-                            float fontWidths = widths[i - start];
-                            int fontCount = 1;
-                            for (int j = i + 1; j < end && j < codeColors.length; j++) {
-                                if (color == codeColors[j]) {
-                                    fontCount++;
-                                    fontWidths += widths[j - start];
-                                } else {
-                                    break;
-                                }
+                for (int i = start + firstPos; i < end && i < textLength; ) {
+                    if (offsetX > maxOffX) {
+                        break;
+                    }
+                    int color = getCodeColor(i);
+                    {
+                        float fontWidths = widths[i - start];
+                        int fontCount = 1;
+                        for (int j = i + 1; j < end && j < textLength; j++) {
+                            if (color == getCodeColor(j)) {
+                                fontCount++;
+                                fontWidths += widths[j - start];
+                            } else {
+                                break;
                             }
-                            if (color == 0) {
-                                color = defaultTextColor;
-                            }
-                            paint.setColor(color);
-                            canvas.drawText(getText(), i, i + fontCount, left + offsetX, lbaseline, paint);
-                            i += fontCount;
-                            offsetX += fontWidths;
-
                         }
+                        if (color == 0) {
+                            color = defaultTextColor;
+                        }
+
+                        paint.setColor(color);
+                        canvas.drawText(getText(), i, i + fontCount, left + offsetX, lbaseline, paint);
+                        i += fontCount;
+                        offsetX += fontWidths;
+
                     }
                 }
             }
@@ -422,6 +421,28 @@ public class ColorsText extends EditText {
 
     }
 
+    private int getCodeColor(int i) {
+        if (codeColors != null && i < codeColors.length) {
+            return codeColors[i];
+        }
+        return 0;
+    }
+
+    public int[] getCodeColors() {
+        int textLength = getText().length();
+        if (codeColors == null) {
+            codeColors = new int[textLength];
+        }
+        //如果文字长度小于颜色长度，生成新的颜色数组
+        if (textLength >= codeColors.length) {
+            int newColors[] = new int[textLength + 500];
+            for (int i = 0; i < codeColors.length; i++) {
+                newColors[i] = codeColors[i];
+            }
+            codeColors = newColors;
+        }
+        return codeColors;
+    }
 
     public int getViewScrollX() {
         return getScrollView().getScrollX();
@@ -447,15 +468,6 @@ public class ColorsText extends EditText {
         return Math.min(getHeight(), getScrollView().getHeight());
     }
 
-    public void setCodeColors(int[] codeColors) {
-        synchronized (colorLock) {
-            this.codeColors = codeColors;
-        }
-    }
-
-    public int[] getCodeColors() {
-        return codeColors;
-    }
 
     Rect getCursorRect() {
         Layout layout = getLayout();
