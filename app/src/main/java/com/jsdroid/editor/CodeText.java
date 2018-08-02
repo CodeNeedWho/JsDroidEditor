@@ -25,7 +25,9 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ScrollView;
 
 import java.security.Key;
 
@@ -39,7 +41,6 @@ public class CodeText extends ColorsText {
     public CodeText(Context context) {
         super(context);
         init();
-
     }
 
     public CodeText(Context context, AttributeSet attrs) {

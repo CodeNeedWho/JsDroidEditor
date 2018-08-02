@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -16,18 +18,69 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CodePane codePane = new CodePane(this);
-        String source = "function main(){\n\tprint(\"hello jsdroid!\");\n}";
+        setContentView(codePane);
+        String source = "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n" +
+                "function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } function main(){ print(\"hello jsdroid!\"); } \n";
         source = source.replace("\t", "    ");
         preformEdit = new PreformEdit(codePane.getCodeText());
         preformEdit.setDefaultText(source);
-        setContentView(codePane);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("撤销");
         menu.add("重做");
-
         return super.onCreateOptionsMenu(menu);
     }
 

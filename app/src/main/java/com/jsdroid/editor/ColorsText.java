@@ -6,11 +6,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.Layout;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -31,10 +35,13 @@ public class ColorsText extends EditText {
     private int mMaxLineNumber;
     // 行号内边距
     private int mNumberPadding;
+    private int mTextPadding;
+    private int mLineNumberBgStrokeWidth;
     private int defaultTextColor = 0xffffffff;
-    private int lineNumberColor = 0xffffffff;
-    private int lineNumberBackgroundColor = 0x33ffffff;
+    private int lineNumberColor = 0x99ffffff;
+    private int lineNumberBackgroundColor = 0x99ffffff;
     private int lineNumberSplitColor = 0x99ffffff;
+    private int lineNumberSplitWidth = 1;
     private int cursorColor = 0xffffff;
 
     public void setLineNumberColor(int lineNumberColor) {
@@ -77,6 +84,8 @@ public class ColorsText extends EditText {
 
     private void init() {
         mNumberPadding = DpiUtils.dip2px(getContext(), 5);
+        mTextPadding = DpiUtils.dip2px(getContext(), 4);
+        mLineNumberBgStrokeWidth = DpiUtils.dip2px(getContext(), 2);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -85,9 +94,11 @@ public class ColorsText extends EditText {
         // 设值背景透明
         setBackgroundColor(Color.TRANSPARENT);
         // 设值字体大小
-        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         // 设置字体颜色(透明是为了兼容不能反射绘制光标以及选择文字背景的情况)
         setTextColor(Color.TRANSPARENT);
+        setTypeface(Typeface.MONOSPACE);
+        setPadding(0, DpiUtils.dip2px(getContext(), 2), DpiUtils.dip2px(getContext(), 8), DpiUtils.dip2px(getContext(), 48));
 
     }
 
@@ -218,7 +229,6 @@ public class ColorsText extends EditText {
         return mEditorField.get(this);
     }
 
-    boolean drawCursor;
 
     /**
      * 绘制光标以及文字选择背景
@@ -284,12 +294,13 @@ public class ColorsText extends EditText {
 
         // 绘制分割线
         Paint paint = getPaint();
+        paint.setStrokeWidth(lineNumberSplitWidth);
         paint.setColor(lineNumberSplitColor);
-        canvas.drawLine(getPaddingLeft() - mNumberPadding, 0, getPaddingLeft() - mNumberPadding, getHeight(), paint);
+        canvas.drawLine(getPaddingLeft() - mTextPadding, 0, getPaddingLeft() - mTextPadding, getHeight(), paint);
 
         // 根据行号计算左边距padding
         String max = Integer.toString(mMaxLineNumber);
-        float lineNumberSize = getPaint().measureText(max) + mNumberPadding + mNumberPadding + mNumberPadding;
+        float lineNumberSize = getPaint().measureText(max) + mNumberPadding + mNumberPadding + mTextPadding;
 
         if (getPaddingLeft() != lineNumberSize) {
             setPadding((int) lineNumberSize, getPaddingTop(), getPaddingRight(), getPaddingBottom());
@@ -350,7 +361,10 @@ public class ColorsText extends EditText {
             // 绘制选择行背景
             if (lineNum == selectLine) {
                 paint.setColor(lineNumberBackgroundColor);
-                canvas.drawRect(0, ltop, getPaddingLeft() - mNumberPadding - 1, lbottom, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(mLineNumberBgStrokeWidth);
+                canvas.drawRect(getPaddingLeft() - mLineNumberBgStrokeWidth, ltop, getRight() - getPaddingRight() + mLineNumberBgStrokeWidth, lbottom, paint);
+                paint.setStyle(Paint.Style.FILL);
             }
             // 绘制行号
             String lineNumberText = lineNumbles.get(lineNum);
@@ -408,6 +422,7 @@ public class ColorsText extends EditText {
 
     }
 
+
     public int getViewScrollX() {
         return getScrollView().getScrollX();
     }
@@ -449,9 +464,27 @@ public class ColorsText extends EditText {
         final int top = layout.getLineTop(line);
         final int bottom = layout.getLineTop(line + 1);
         float horizontal = layout.getSecondaryHorizontal(offset);
-        horizontal = Math.max(0.5f, horizontal - 0.5f);
+//        horizontal = Math.max(0.5f, horizontal - 0.5f);
         int left = (int) (horizontal);
-        return new Rect(left, top, left + 1, bottom);
+        return new Rect(left, top, left + DpiUtils.dip2px(getContext(), 1), bottom);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_UP:
+
+                if (event.getY() > getHeight() - getPaddingBottom()) {
+                    int len = getText().length();
+                    if (len > 0 && getText().charAt(len - 1) != '\n') {
+
+                    }
+                    append("\n");
+
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 
 }

@@ -18,6 +18,9 @@ package com.jsdroid.editor;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+
 
 /**
  * Created by Administrator on 2018/2/11.
@@ -31,6 +34,7 @@ public class CodePane extends HVScrollView {
     public CodePane(Context context) {
         super(context);
         init();
+
     }
 
     public CodePane(Context context, AttributeSet attrs) {
@@ -39,15 +43,24 @@ public class CodePane extends HVScrollView {
     }
 
     private void init() {
+        setVerticalScrollBarEnabled(true);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         //设置背景颜色
         setBackgroundColor(0XFF333333);
         mCodeText = new CodeText(getContext());
         mCodeText.setScrollView(this);
-        mCodeText.setPadding(0, DpiUtils.dip2px(getContext(), 2), DpiUtils.dip2px(getContext(), 10), DpiUtils.dip2px(getContext(), 20));
         mCodeText.setSelectBackgroundColor(0x33ffffff);
         // 设置光标颜色
         mCodeText.setCursorColor(0xffffffff);
         addView(mCodeText);
+        //监听输入法
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+            }
+        });
     }
 
     @Override
@@ -64,6 +77,21 @@ public class CodePane extends HVScrollView {
             return;
         }
         super.onDraw(canvas);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
     }
 
     @Override
