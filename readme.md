@@ -1,10 +1,11 @@
 # 简介
-JsDroid用到的语法高亮编辑器，支持撤销重做。<br>
-用到了rhino的JsParser,并且对其进行了修改。<br>
-适配各种字体，可以自定义光标颜色，背景颜色等。
+多种属性，自由定义！<br>
+十万文字，轻松高亮！
 # 截图
 ![](https://github.com/980008027/JsDroidEditor/raw/master/capture.jpg)
 # 演示
 ![image](https://github.com/980008027/JsDroidEditor/raw/master/1.gif)
 <br>
 ![image](https://github.com/980008027/JsDroidEditor/raw/master/2.gif)
+# 关于
+用到了rhino的JsParser,并且对其进行了修改。<br>
